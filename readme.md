@@ -7,17 +7,19 @@ The tech stack used is the following:
 - **Express** and **Node.js** - Server and authentication
 - **MongoDB** - Data storage
 
+**Please note that this project is still in the very early stages of development, avoid using in production!**
+
 ## Installation
 
 To install the project you first need to clone it. Open the project directory in a terminal and run `npm install` to install the dependencies needed.
 
-Some aditional configuration steps are described below.
+Some additional configuration steps are described below.
 
 ### Spotify settings
 
-In order to run this project you need to create a Spotify app in the [developer dashboard](https://developer.spotify.com/dashboard). Then you can get the **Client ID** and **Client Secret** needed for the environment configuration.
+In order to run this project, you need to create a Spotify app in the [developer dashboard](https://developer.spotify.com/dashboard). Then you can get the **Client ID** and **Client Secret** needed for the environment configuration.
 
-You will aditionally need to setup the callback url. This will be the url of your client that will be redirected to after the user logins with spotify. This will need to be added to the environment variables and to the Spotify app settings under **Redirect URIs**.
+You will additionally need to set up the callback URL. This will be the URL of your client that will be redirected to after the user logins with Spotify. This will need to be added to the environment variables and to the Spotify app settings under **Redirect URIs**.
 
 ### Environment variables
 
@@ -40,3 +42,7 @@ Before running the project make sure the MongoDB database you configured in the 
 To run the API locally you can use `npm run start:dev`. 
 
 This launches the API server on port 8888 and uses the file `src/config/.env.development` to set the environment. Either create one following the template or change the location in the `package.json`
+
+## Clients
+
+For a client implementation check out [spoti-stats-angular](https://github.com/pedronave/spoti-stats-angular).
