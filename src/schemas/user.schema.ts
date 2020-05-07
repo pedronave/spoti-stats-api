@@ -1,17 +1,15 @@
-const GraphQL = require('graphql');
-
-const PlayType = require('./play.schema');
-const { getPlayHistory } = require('../services/play-history');
-const { getRecentlyPlayedTracks, getCurrentlyPlayingTrack } = require('../services/play-history');
-
-const {
+import {
   GraphQLID,
   GraphQLObjectType,
   GraphQLList,
   GraphQLString,
-} = GraphQL;
+} from 'graphql';
 
-const CurrentPlayType = require('./current-play.schema');
+import PlayType from './play.schema';
+import { getPlayHistory } from '../services/play-history';
+import { getRecentlyPlayedTracks, getCurrentlyPlayingTrack } from '../services/play-history';
+
+import CurrentPlayType from './current-play.schema';
 
 const UserType = new GraphQLObjectType({
   name: 'user',
@@ -48,4 +46,4 @@ const UserType = new GraphQLObjectType({
   }),
 });
 
-module.exports = UserType;
+export default UserType;

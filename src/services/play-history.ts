@@ -1,15 +1,16 @@
 
-const { getUserSpotifyApi, resetSpotifyApiTokens } = require('../utils/spotify-api.utils');
-const PlayHistory = require('../models/play-history.model');
+import { getUserSpotifyApi, resetSpotifyApiTokens } from '../utils/spotify-api.utils';
+import PlayHistory, { Play } from '../models/play-history.model';
+import SpotifyWebApi = require('spotify-web-api-node');
 
 /**
  * Gets the recently played tracks from the spotify api
  * @param {String} userId id of user whose tracks is wanted
  */
-function getRecentlyPlayedTracks(userId) {
+function getRecentlyPlayedTracks(userId): Promise<SpotifyApi.UsersRecentlyPlayedTracksResponse> {
   return new Promise(
     (resolve, reject) => {
-      getUserSpotifyApi(userId).then((spotifyApi) => {
+      getUserSpotifyApi(userId).then((spotifyApi: SpotifyWebApi) => {
         // TODO add after, before params
         spotifyApi.getMyRecentlyPlayedTracks().then(
           (data) => {
@@ -35,7 +36,7 @@ function getPlayHistory(userId) {
   // TODO add filters
   return new Promise(
     (resolve, reject) => {
-      getUserSpotifyApi(userId).then((spotifyApi) => {
+      getUserSpotifyApi(userId).then((spotifyApi: SpotifyWebApi) => {
         // If this gets in here the userId is registered
         PlayHistory.findOne({ userId }).then(
           (historyFound) => {
@@ -57,7 +58,7 @@ function getPlayHistory(userId) {
             // Get recently played tracks from spotify
             spotifyApi.getMyRecentlyPlayedTracks({ after: afterValue }).then(
               (data) => {
-                const recentPlays = data.body.items.map((item) => {
+                const recentPlays = data.body.items.map<Play>((item) => {
                   const artists = item.track.artists.map(
                     (artist) => ({ id: artist.id, name: artist.name }),
                   );
@@ -66,16 +67,17 @@ function getPlayHistory(userId) {
                     track: {
                       id: item.track.id,
                       name: item.track.name,
-                      duration_ms: item.track.duration_ms,
+                      //duration_ms: item.track.duration_ms,
                       album: {
-                        id: item.track.album.id,
-                        name: item.track.album.name,
+                        id: 'test',//item.track.album.id,
+                        name: 'test',//item.track.album.name,
                       },
                       artists,
                     },
-                    played_at: item.played_at,
+                    played_at: new Date(item.played_at),
                   };
                 });
+
                 let updatedPlays = recentPlays;
                 // If there are previous played tracks add them to the new ones.
                 if (userHistory.plays !== null && userHistory.plays !== undefined) {
@@ -85,7 +87,6 @@ function getPlayHistory(userId) {
                 userHistory.plays = updatedPlays;
                 userHistory.save();
                 resolve(updatedPlays);
-                // resolve(data.body);
               },
               (err) => {
                 reject(err);
@@ -113,7 +114,7 @@ function getPlayHistory(userId) {
 function getCurrentlyPlayingTrack(userId) {
   return new Promise(
     (resolve, reject) => {
-      getUserSpotifyApi(userId).then((spotifyApi) => {
+      getUserSpotifyApi(userId).then((spotifyApi: SpotifyWebApi) => {
         spotifyApi.getMyCurrentPlayingTrack().then(
           (data) => {
             resolve(data.body);
@@ -129,4 +130,4 @@ function getCurrentlyPlayingTrack(userId) {
   );
 }
 
-module.exports = { getRecentlyPlayedTracks, getCurrentlyPlayingTrack, getPlayHistory };
+export { getRecentlyPlayedTracks, getCurrentlyPlayingTrack, getPlayHistory };

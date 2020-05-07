@@ -1,9 +1,9 @@
-const { Router } = require('express');
-const SpotifyWebApi = require('spotify-web-api-node');
-const jwt = require('jsonwebtoken');
+import { Router } from 'express';
+import SpotifyWebApi = require('spotify-web-api-node');
+import * as jwt from 'jsonwebtoken';
 
-const User = require('../models/user.model');
-const { resetSpotifyApiTokens } = require('../utils/spotify-api.utils');
+import User from '../models/user.model';
+import { resetSpotifyApiTokens } from '../utils/spotify-api.utils';
 
 const authRouter = Router();
 
@@ -33,7 +33,7 @@ authRouter.get('/spotify-auth', (req, res) => {
 
 authRouter.get('/spotify-callback', (req, res) => {
   // The code that's returned as a query parameter to the redirect URI
-  const code = req.query.code || null;
+  const code = req.query.code.toString();
   // The returnedState should be compared with the sent one.
   // const returnedState = req.query.state || null;
 
@@ -96,4 +96,4 @@ authRouter.get('/spotify-callback', (req, res) => {
   // res.redirect('/');
 });
 
-module.exports = authRouter;
+export default authRouter;

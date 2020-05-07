@@ -1,12 +1,9 @@
-const GraphQL = require('graphql');
-
-const TrackType = require('./track.schema');
-
-const {
+import {
   GraphQLObjectType,
   GraphQLString,
-} = GraphQL;
+} from 'graphql';
 
+import TrackType from './track.schema';
 
 /**
  * Schema used to define a single play of a track
@@ -19,4 +16,4 @@ const PlayType = new GraphQLObjectType({
   }),
 });
 
-module.exports = PlayType;
+export default PlayType;

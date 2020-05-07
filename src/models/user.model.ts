@@ -1,8 +1,20 @@
-const mongoose = require('mongoose');
+import * as mongoose from 'mongoose';
 
-const { Schema } = mongoose;
+export class User extends mongoose.Document {
+  _id: string;
+  displayName: string;
+  spotifyAuth: {
+    accessToken: string;
+    accessTokenExpiration: Date;
+    refreshToken: string;
+  }
 
-const UserSchema = new Schema({
+  isSpotifyTokenExpired() {
+    return isDateExpired(this.spotifyAuth.accessTokenExpiration);
+  };
+};
+
+const UserSchema = new mongoose.Schema({
   _id: {
     type: String,
     required: true,
@@ -10,7 +22,7 @@ const UserSchema = new Schema({
   displayName: {
     type: String,
     trim: true,
-    required: 'User name is required',
+    required: true,
   },
   spotifyAuth: {
     accessToken: String,
@@ -22,11 +34,6 @@ const UserSchema = new Schema({
 function isDateExpired(date) {
   return date.getTime() <= Date.now();
 }
-
-// eslint-disable-next-line func-names
-UserSchema.methods.isSpotifyTokenExpired = function () {
-  return isDateExpired(this.spotifyAuth.accessTokenExpiration);
-};
 
 /**
  * Statics
@@ -44,4 +51,4 @@ UserSchema.statics = {
   },
 };
 
-module.exports = mongoose.model('User', UserSchema);
+export default mongoose.model<User>('User', UserSchema);

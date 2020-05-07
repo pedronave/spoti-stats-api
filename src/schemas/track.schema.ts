@@ -1,15 +1,13 @@
-const GraphQL = require('graphql');
-
-const ArtistType = require('./artist.schema');
-const AlbumType = require('./album.schema');
-
-const {
+import {
   GraphQLID,
   GraphQLInt,
   GraphQLList,
   GraphQLObjectType,
   GraphQLString,
-} = GraphQL;
+} from 'graphql';
+
+import ArtistType from './artist.schema';
+import AlbumType from './album.schema';
 
 const TrackType = new GraphQLObjectType({
   name: 'track',
@@ -33,4 +31,4 @@ const TrackType = new GraphQLObjectType({
   }),
 });
 
-module.exports = TrackType;
+export default TrackType;

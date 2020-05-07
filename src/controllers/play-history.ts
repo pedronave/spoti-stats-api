@@ -1,12 +1,12 @@
-const { Router } = require('express');
-const { getRecentlyPlayedTracks, getPlayHistory } = require('../services/play-history.js');
+import { Router } from 'express';
+import { getRecentlyPlayedTracks, getPlayHistory } from '../services/play-history.js';
 
 const router = Router();
 
 router.get('/:userid/recent', (req, res) => {
   getRecentlyPlayedTracks(req.params.userid).then(
     (data) => {
-      res.send(data.body);
+      res.send(data.items);
     },
     (err) => {
       res.status(500).send(err.message);

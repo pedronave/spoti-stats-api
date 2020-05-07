@@ -1,13 +1,10 @@
-const GraphQL = require('graphql');
-
-const TrackType = require('./track.schema');
-
-const {
+import {
   GraphQLBoolean,
   GraphQLObjectType,
   GraphQLString,
-} = GraphQL;
+} from 'graphql';
 
+import TrackType from './track.schema';
 
 /**
  * Schema used to define the currently playing track
@@ -21,4 +18,4 @@ const CurrentPlayType = new GraphQLObjectType({
   }),
 });
 
-module.exports = CurrentPlayType;
+export default CurrentPlayType;

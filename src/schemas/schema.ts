@@ -1,12 +1,10 @@
-const GraphQL = require('graphql');
-const { getUserSpotifyApi } = require('../utils/spotify-api.utils');
-const UserType = require('./user.schema');
-
-const {
+import {
   GraphQLID,
   GraphQLObjectType,
   GraphQLSchema,
-} = GraphQL;
+} from 'graphql';
+import { getUserSpotifyApi } from '../utils/spotify-api.utils';
+import UserType from './user.schema';
 
 const RootQueryType = new GraphQLObjectType({
   name: 'RootQuery',
@@ -51,6 +49,6 @@ const RootQueryType = new GraphQLObjectType({
   },
 });
 
-module.exports = new GraphQLSchema({
+export default new GraphQLSchema({
   query: RootQueryType,
 });

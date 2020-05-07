@@ -1,6 +1,6 @@
-const { Router } = require('express');
-const { getUserSpotifyApi, resetSpotifyApiTokens } = require('../utils/spotify-api.utils');
-const { getPlayHistory } = require('../services/play-history');
+import { Router } from 'express';
+import { getUserSpotifyApi, resetSpotifyApiTokens } from '../utils/spotify-api.utils';
+import { getPlayHistory } from '../services/play-history';
 
 
 const router = Router();
@@ -32,4 +32,4 @@ router.get('/:userid/history', (req, res) => {
 });
 
 
-module.exports = router;
+export default router;
