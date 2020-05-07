@@ -1,10 +1,4 @@
-import {
-  GraphQLID,
-  GraphQLObjectType,
-  GraphQLString,
-  GraphQLInt,
-  GraphQLList,
-} from 'graphql';
+import { GraphQLID, GraphQLObjectType, GraphQLString, GraphQLInt, GraphQLList } from 'graphql';
 
 import ArtistType from './artist.schema';
 

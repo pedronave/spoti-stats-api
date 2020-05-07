@@ -1,8 +1,4 @@
-import {
-  GraphQLBoolean,
-  GraphQLObjectType,
-  GraphQLString,
-} from 'graphql';
+import { GraphQLBoolean, GraphQLObjectType, GraphQLString } from 'graphql';
 
 import TrackType from './track.schema';
 
@@ -11,9 +7,12 @@ import TrackType from './track.schema';
  */
 const CurrentPlayType = new GraphQLObjectType({
   name: 'currentPlay',
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   fields: () => ({
     item: { type: TrackType },
+    // eslint-disable-next-line @typescript-eslint/camelcase
     is_playing: { type: GraphQLBoolean },
+    // eslint-disable-next-line @typescript-eslint/camelcase
     played_at: { type: GraphQLString },
   }),
 });

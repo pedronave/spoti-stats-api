@@ -7,7 +7,6 @@ import Schema from './schemas/schema';
 
 require('dotenv').config();
 
-
 import express = require('express');
 import graphQLHTTP = require('express-graphql');
 // import historyRouter from './routes/play-history';
@@ -26,11 +25,13 @@ app.use(cors());
 app.use('/api/auth', authRouter);
 // app.use('/api/user', historyRouter);
 
-app.use('/api/graphql', graphQLHTTP({
-  schema: Schema,
-  graphiql: true,
-}));
-
+app.use(
+  '/api/graphql',
+  graphQLHTTP({
+    schema: Schema,
+    graphiql: true,
+  }),
+);
 
 // eslint-disable-next-line no-console
 app.listen(port, () => console.log(`Spoti Stats server running on port ${port}`));

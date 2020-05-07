@@ -1,7 +1,4 @@
-import {
-  GraphQLObjectType,
-  GraphQLString,
-} from 'graphql';
+import { GraphQLObjectType, GraphQLString } from 'graphql';
 
 import TrackType from './track.schema';
 
@@ -10,8 +7,10 @@ import TrackType from './track.schema';
  */
 const PlayType = new GraphQLObjectType({
   name: 'play',
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   fields: () => ({
     track: { type: TrackType },
+    // eslint-disable-next-line @typescript-eslint/camelcase
     played_at: { type: GraphQLString },
   }),
 });

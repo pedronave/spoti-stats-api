@@ -23,28 +23,34 @@ export class Play {
   played_at: Date;
 }
 
-const PlayHistorySchema = new mongoose.Schema({
-  userId: {
-    type: String,
-    required: true,
-  },
-  plays: [{
-    track: {
-      id: String,
-      name: String,
-      album: {
-        id: String,
-        name: String,
-      },
-      artists: [{
-        id: String,
-        name: String,
-      }],
+const PlayHistorySchema = new mongoose.Schema(
+  {
+    userId: {
+      type: String,
+      required: true,
     },
-    // eslint-disable-next-line @typescript-eslint/camelcase
-    played_at: Date,
-  }],
-}, { timestamps: true });
-
+    plays: [
+      {
+        track: {
+          id: String,
+          name: String,
+          album: {
+            id: String,
+            name: String,
+          },
+          artists: [
+            {
+              id: String,
+              name: String,
+            },
+          ],
+        },
+        // eslint-disable-next-line @typescript-eslint/camelcase
+        played_at: Date,
+      },
+    ],
+  },
+  { timestamps: true },
+);
 
 export default mongoose.model<PlayHistory>('PlayHistory', PlayHistorySchema);

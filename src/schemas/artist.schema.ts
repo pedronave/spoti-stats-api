@@ -1,8 +1,4 @@
-import {
-  GraphQLID,
-  GraphQLObjectType,
-  GraphQLString,
-} from 'graphql';
+import { GraphQLID, GraphQLObjectType, GraphQLString } from 'graphql';
 
 const ArtistType = new GraphQLObjectType({
   name: 'artist',

@@ -1,22 +1,18 @@
-import {
-  GraphQLID,
-  GraphQLObjectType,
-  GraphQLList,
-  GraphQLString,
-} from 'graphql';
+import { GraphQLID, GraphQLObjectType, GraphQLList, GraphQLString } from 'graphql';
 
 import PlayType from './play.schema';
-import { getPlayHistory } from '../services/play-history';
-import { getRecentlyPlayedTracks, getCurrentlyPlayingTrack } from '../services/play-history';
+import { getPlayHistory, getRecentlyPlayedTracks, getCurrentlyPlayingTrack } from '../services/play-history';
 
 import CurrentPlayType from './current-play.schema';
 
 const UserType = new GraphQLObjectType({
   name: 'user',
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   fields: () => ({
     id: { type: GraphQLID },
     currentlyPlaying: {
       type: CurrentPlayType,
+      // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
       resolve(parent) {
         return getCurrentlyPlayingTrack(parent.id).then(
           (currentData) => currentData,
@@ -27,6 +23,7 @@ const UserType = new GraphQLObjectType({
     displayName: { type: GraphQLString },
     recentlyPlayed: {
       type: new GraphQLList(PlayType),
+      // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
       resolve(parent) {
         return getRecentlyPlayedTracks(parent.id).then(
           (recentData) => recentData.items,
@@ -36,11 +33,10 @@ const UserType = new GraphQLObjectType({
     },
     playHistory: {
       type: new GraphQLList(PlayType),
+      // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
       resolve(parent) {
         // console.log(parent);
-        return getPlayHistory(parent.id).then(
-          (data) => data,
-        );
+        return getPlayHistory(parent.id).then((data) => data);
       },
     },
   }),

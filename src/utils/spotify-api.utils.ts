@@ -27,45 +27,47 @@ function getUserSpotifyApi(userId: string): Promise<SpotifyWebApi> {
     clientId,
   });
 
-  return new Promise(((resolve, reject) => {
-    User.findById(userId).then((foundUser) => {
-      const user = foundUser;
-      if (user === null) {
-        const userNotFoundError = new Error('User not found');
+  return new Promise((resolve, reject) => {
+    User.findById(userId).then(
+      (foundUser) => {
+        const user = foundUser;
+        if (user === null) {
+          const userNotFoundError = new Error('User not found');
 
-        reject(userNotFoundError);
-      } else {
-        const { refreshToken } = user.spotifyAuth;
-
-        spotifyApi.setRefreshToken(refreshToken);
-
-        if (user.isSpotifyTokenExpired()) {
-          spotifyApi.refreshAccessToken().then(
-            (refreshResult) => {
-              // Update token in DB
-              const expirationDate = new Date(Date.now() + refreshResult.body.expires_in * 1000);
-              user.spotifyAuth.accessToken = refreshResult.body.access_token;
-              user.spotifyAuth.accessTokenExpiration = expirationDate;
-
-              user.save();
-
-              spotifyApi.setAccessToken(refreshResult.body.access_token);
-              resolve(spotifyApi);
-            },
-            (refreshError) => {
-              reject(refreshError);
-            },
-          );
+          reject(userNotFoundError);
         } else {
-          spotifyApi.setAccessToken(user.spotifyAuth.accessToken);
-          resolve(spotifyApi);
+          const { refreshToken } = user.spotifyAuth;
+
+          spotifyApi.setRefreshToken(refreshToken);
+
+          if (user.isSpotifyTokenExpired()) {
+            spotifyApi.refreshAccessToken().then(
+              (refreshResult) => {
+                // Update token in DB
+                const expirationDate = new Date(Date.now() + refreshResult.body.expires_in * 1000);
+                user.spotifyAuth.accessToken = refreshResult.body.access_token;
+                user.spotifyAuth.accessTokenExpiration = expirationDate;
+
+                user.save();
+
+                spotifyApi.setAccessToken(refreshResult.body.access_token);
+                resolve(spotifyApi);
+              },
+              (refreshError) => {
+                reject(refreshError);
+              },
+            );
+          } else {
+            spotifyApi.setAccessToken(user.spotifyAuth.accessToken);
+            resolve(spotifyApi);
+          }
         }
-      }
-    },
-    (findError) => {
-      reject(findError);
-    });
-  }));
+      },
+      (findError) => {
+        reject(findError);
+      },
+    );
+  });
 }
 
 export { getUserSpotifyApi, resetSpotifyApiTokens };

@@ -9,11 +9,17 @@ import SpotifyWebApi = require('spotify-web-api-node');
 
 const authRouter = Router();
 
-const scopes = ['user-read-private', 'user-read-email', 'user-read-recently-played', 'user-read-playback-position', 'user-read-currently-playing', 'user-follow-read'];
+const scopes = [
+  'user-read-private',
+  'user-read-email',
+  'user-read-recently-played',
+  'user-read-playback-position',
+  'user-read-currently-playing',
+  'user-follow-read',
+];
 const redirectUri = process.env.SPOTIFY_AUTH_CALLBACK_URL;
 const clientId = process.env.SPOTIFY_CLIENT_ID;
 const clientSecrect = process.env.SPOTIFY_CLIENT_SECRET;
-
 
 // Setting credentials can be done in the wrapper's constructor, or using the API object's setters.
 const spotifyApi = new SpotifyWebApi({
@@ -52,34 +58,38 @@ authRouter.get('/spotify-callback', (req, res) => {
         (userData) => {
           const userId = userData.body.id;
           console.log(userData);
-          User.findById(userId).then(
-            (foundUser) => {
-              let user = foundUser;
+          User.findById(userId)
+            .then(
+              (foundUser) => {
+                let user = foundUser;
 
-              if (user === null) {
-                console.log('User not found, creating a new one');
+                if (user === null) {
+                  console.log('User not found, creating a new one');
 
-                user = new User({ _id: userId, displayName: userData.body.display_name });
-              }
+                  user = new User({ _id: userId, displayName: userData.body.display_name });
+                }
 
-              user.spotifyAuth = {
-                accessToken: data.body.access_token,
-                accessTokenExpiration: expiryDate,
-                refreshToken: data.body.refresh_token,
-              };
+                user.spotifyAuth = {
+                  accessToken: data.body.access_token,
+                  accessTokenExpiration: expiryDate,
+                  refreshToken: data.body.refresh_token,
+                };
 
-              user.save().then();
-              const jwtSecret = process.env.JWT_SECRET;
-              const token = jwt.sign({ userId, displayName: user.displayName }, jwtSecret);
+                user.save().then();
+                const jwtSecret = process.env.JWT_SECRET;
+                const token = jwt.sign({ userId, displayName: user.displayName }, jwtSecret);
 
-              res.setHeader('Authorization', token);
-              res.send({ token });
-            },
-            (findError) => {
-              console.log(findError);
-              res.status(500).send(findError);
-            },
-          ).finally(() => { resetSpotifyApiTokens(spotifyApi); });
+                res.setHeader('Authorization', token);
+                res.send({ token });
+              },
+              (findError) => {
+                console.log(findError);
+                res.status(500).send(findError);
+              },
+            )
+            .finally(() => {
+              resetSpotifyApiTokens(spotifyApi);
+            });
         },
         () => {
           res.status(500).send('Failed to get profile info');
@@ -91,7 +101,6 @@ authRouter.get('/spotify-callback', (req, res) => {
       res.status(500).send(codeGrantErr);
     },
   );
-
 
   // res.redirect('/');
 });

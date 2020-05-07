@@ -1,8 +1,4 @@
-import {
-  GraphQLID,
-  GraphQLObjectType,
-  GraphQLSchema,
-} from 'graphql';
+import { GraphQLID, GraphQLObjectType, GraphQLSchema } from 'graphql';
 import { getUserSpotifyApi } from '../utils/spotify-api.utils';
 import UserType from './user.schema';
 

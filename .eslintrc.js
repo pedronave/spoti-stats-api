@@ -5,7 +5,9 @@ module.exports = {
     },
     extends: [
         'airbnb-base',
-        "plugin:@typescript-eslint/recommended"
+        "plugin:@typescript-eslint/recommended",
+        "prettier/@typescript-eslint",
+        "plugin:prettier/recommended" // Make sure this is the last config in the array
     ],
     globals: {
         "Atomics": "readonly",
