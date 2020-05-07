@@ -1,21 +1,16 @@
-const GraphQL = require('graphql');
+import { GraphQLID, GraphQLObjectType, GraphQLString, GraphQLInt, GraphQLList } from 'graphql';
 
-const ArtistType = require('./artist.schema');
-
-const {
-  GraphQLID,
-  GraphQLObjectType,
-  GraphQLString,
-  GraphQLInt,
-  GraphQLList,
-} = GraphQL;
+import ArtistType from './artist.schema';
 
 const AlbumType = new GraphQLObjectType({
   name: 'album',
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   fields: () => ({
     id: { type: GraphQLID },
     name: { type: GraphQLString },
+    // eslint-disable-next-line @typescript-eslint/camelcase
     release_date: { type: GraphQLString },
+    // eslint-disable-next-line @typescript-eslint/camelcase
     total_tracks: { type: GraphQLInt },
     artists: {
       type: new GraphQLList(ArtistType),
@@ -26,4 +21,4 @@ const AlbumType = new GraphQLObjectType({
   }),
 });
 
-module.exports = AlbumType;
+export default AlbumType;

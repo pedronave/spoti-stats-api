@@ -1,10 +1,4 @@
-const GraphQL = require('graphql');
-
-const {
-  GraphQLID,
-  GraphQLObjectType,
-  GraphQLString,
-} = GraphQL;
+import { GraphQLID, GraphQLObjectType, GraphQLString } from 'graphql';
 
 const ArtistType = new GraphQLObjectType({
   name: 'artist',
@@ -14,4 +8,4 @@ const ArtistType = new GraphQLObjectType({
   }),
 });
 
-module.exports = ArtistType;
+export default ArtistType;

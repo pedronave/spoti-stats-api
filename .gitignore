@@ -1,6 +1,9 @@
 # Environment variables files
 .env*
 
+# IDE specific files
+.vscode
+
 # Logs
 logs
 *.log
