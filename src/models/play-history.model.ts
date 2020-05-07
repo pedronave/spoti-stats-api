@@ -5,7 +5,7 @@ export interface PlayHistory extends mongoose.Document {
   plays: Play[];
 }
 
-export interface Play {
+export class Play {
   track: {
     id: string;
     name: string;
@@ -18,6 +18,8 @@ export interface Play {
       name: string;
     }[];
   };
+
+  // eslint-disable-next-line @typescript-eslint/camelcase
   played_at: Date;
 }
 
@@ -39,6 +41,7 @@ const PlayHistorySchema = new mongoose.Schema({
         name: String,
       }],
     },
+    // eslint-disable-next-line @typescript-eslint/camelcase
     played_at: Date,
   }],
 }, { timestamps: true });

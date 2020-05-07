@@ -1,12 +1,15 @@
-require('dotenv').config();
-const mongoose = require('mongoose');
-const express = require('express');
-const graphQLHTTP = require('express-graphql');
-const cors = require('cors');
+import * as mongoose from 'mongoose';
+import * as cors from 'cors';
 
-const historyRouter = require('./routes/play-history');
-const authRouter = require('./routes/authorization');
-const Schema = require('./schemas/schema');
+// import historyRouter = require('./routes/play-history');
+import authRouter from './routes/authorization';
+import Schema from './schemas/schema';
+
+require('dotenv').config();
+
+
+import express = require('express');
+import graphQLHTTP = require('express-graphql');
 // import historyRouter from './routes/play-history';
 // import authRouter from './routes/authorization';
 
@@ -29,4 +32,5 @@ app.use('/api/graphql', graphQLHTTP({
 }));
 
 
-app.listen(port, () => console.log(`Spoti stats server running on port ${port}`));
+// eslint-disable-next-line no-console
+app.listen(port, () => console.log(`Spoti Stats server running on port ${port}`));

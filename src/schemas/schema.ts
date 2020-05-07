@@ -12,6 +12,7 @@ const RootQueryType = new GraphQLObjectType({
     user: {
       type: UserType,
       args: { id: { type: GraphQLID } },
+      // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
       resolve(parent, args) {
         return new Promise((resolve, reject) => {
           getUserSpotifyApi(args.id).then(
@@ -30,20 +31,6 @@ const RootQueryType = new GraphQLObjectType({
             },
           );
         });
-        // console.log(`resolving ${args.id}`);
-        // return new Promise((resolve, reject) => {
-        //   getRecentlyPlayedTracks(args.id).then(
-        //     (historyData) => {
-        //       // console.log(historyData);
-        //       // { recentlyPlayed: historyData.items };
-        //       getCurrentlyPlayingTrack(args.id).then(
-        //         (currentData) => {
-        //           resolve({ recentlyPlayed: historyData.items, currentlyPlaying: currentData });
-        //         }, (currentErr) => { reject(currentErr); },
-        //       );
-        //     }, (historyErr) => { reject(historyErr); },
-        //   );
-        // });
       },
     },
   },

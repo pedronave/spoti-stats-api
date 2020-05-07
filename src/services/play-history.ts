@@ -1,6 +1,7 @@
 
 import { getUserSpotifyApi, resetSpotifyApiTokens } from '../utils/spotify-api.utils';
 import PlayHistory, { Play } from '../models/play-history.model';
+
 import SpotifyWebApi = require('spotify-web-api-node');
 
 /**
@@ -32,7 +33,7 @@ function getRecentlyPlayedTracks(userId): Promise<SpotifyApi.UsersRecentlyPlayed
  * @param {String} userId id of user
  * @returns {Promise<PlayHistory>} promise with play history
  */
-function getPlayHistory(userId) {
+function getPlayHistory(userId): Promise<Play[]> {
   // TODO add filters
   return new Promise(
     (resolve, reject) => {
@@ -67,13 +68,14 @@ function getPlayHistory(userId) {
                     track: {
                       id: item.track.id,
                       name: item.track.name,
-                      //duration_ms: item.track.duration_ms,
+                      // duration_ms: item.track.duration_ms,
                       album: {
-                        id: 'test',//item.track.album.id,
-                        name: 'test',//item.track.album.name,
+                        id: 'test', // item.track.album.id,
+                        name: 'test', // item.track.album.name,
                       },
                       artists,
                     },
+                    // eslint-disable-next-line @typescript-eslint/camelcase
                     played_at: new Date(item.played_at),
                   };
                 });
@@ -111,7 +113,7 @@ function getPlayHistory(userId) {
  * @param {String} userId id of user
  * @returns {Promise<SpotifyApi.CurrentlyPlayingResponse>} promise of the currently playing track
  */
-function getCurrentlyPlayingTrack(userId) {
+function getCurrentlyPlayingTrack(userId): Promise<SpotifyApi.CurrentlyPlayingResponse> {
   return new Promise(
     (resolve, reject) => {
       getUserSpotifyApi(userId).then((spotifyApi: SpotifyWebApi) => {

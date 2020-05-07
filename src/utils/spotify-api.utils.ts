@@ -1,11 +1,12 @@
-import SpotifyWebApi = require('spotify-web-api-node');
 import User from '../models/user.model';
+
+import SpotifyWebApi = require('spotify-web-api-node');
 
 /**
  * Resets the tokens for a given SpotifyWebApi oject
  * @param {SpotifyWebApi} spotifyApi SpotifyWebApi oject to reset
  */
-function resetSpotifyApiTokens(spotifyApi) {
+function resetSpotifyApiTokens(spotifyApi: SpotifyWebApi): void {
   spotifyApi.resetAccessToken();
   spotifyApi.resetRefreshToken();
 }
@@ -15,7 +16,7 @@ function resetSpotifyApiTokens(spotifyApi) {
  * @param {String} userId userId of wanted user
  * @returns {Promise<SpotifyWebApi>} Promise of SpotifyWebApi object for the given user
  */
-function getUserSpotifyApi(userId): Promise<SpotifyWebApi> {
+function getUserSpotifyApi(userId: string): Promise<SpotifyWebApi> {
   const redirectUri = process.env.SPOTIFY_AUTH_CALLBACK_URL;
   const clientId = process.env.SPOTIFY_CLIENT_ID;
   const clientSecrect = process.env.SPOTIFY_CLIENT_SECRET;

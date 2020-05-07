@@ -1,9 +1,11 @@
+/* eslint-disable no-console */
 import { Router } from 'express';
-import SpotifyWebApi = require('spotify-web-api-node');
 import * as jwt from 'jsonwebtoken';
 
 import User from '../models/user.model';
 import { resetSpotifyApiTokens } from '../utils/spotify-api.utils';
+
+import SpotifyWebApi = require('spotify-web-api-node');
 
 const authRouter = Router();
 
@@ -23,10 +25,8 @@ const spotifyApi = new SpotifyWebApi({
 authRouter.get('/spotify-auth', (req, res) => {
   // TODO make state depend on the request. Maybe a hash of a cookie or something?
   const state = 'spotify_auth_state';
-  const authorizeURL = spotifyApi.createAuthorizeURL(scopes, state);
 
-  // Create the authorization URL
-  console.log(authorizeURL);
+  const authorizeURL = spotifyApi.createAuthorizeURL(scopes, state);
 
   res.send({ authUrl: authorizeURL });
 });
