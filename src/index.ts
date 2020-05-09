@@ -1,5 +1,6 @@
 import * as mongoose from 'mongoose';
 import * as cors from 'cors';
+import 'reflect-metadata';
 
 import authRouter from './routes/authorization.routes';
 import Schema from './schemas/schema';
@@ -17,7 +18,7 @@ mongoose.connect(process.env.DB_URI, {
 });
 
 const app = express();
-const port = process.env.PORT || 8888;
+const port = process.env.PORT || 8000;
 
 app.use(cors());
 app.use('/api/auth', authRouter);

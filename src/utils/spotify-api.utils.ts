@@ -85,8 +85,11 @@ export function mapRecentPlayToPlayHistory(userId: string, data: SpotifyApi.Play
       name: data.track.name,
       // duration_ms: item.track.duration_ms,
       album: {
-        id: 'test', // item.track.album.id,
-        name: 'test', // item.track.album.name,
+        // TODO check why spotify API returns this even though it's not in the API docs
+        // eslint-disable-next-line dot-notation
+        id: data.track['album'].id,
+        // eslint-disable-next-line dot-notation
+        name: data.track['album'].id,
       },
       artists,
     },

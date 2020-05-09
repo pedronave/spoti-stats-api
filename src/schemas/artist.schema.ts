@@ -1,11 +1,20 @@
-import { GraphQLID, GraphQLObjectType, GraphQLString } from 'graphql';
+import { ObjectType, Field, ID } from 'type-graphql';
 
-const ArtistType = new GraphQLObjectType({
-  name: 'artist',
-  fields: () => ({
-    id: { type: GraphQLID },
-    name: { type: GraphQLString },
-  }),
-});
+@ObjectType()
+class Artist {
+  @Field((type) => ID)
+  id: string;
 
-export default ArtistType;
+  @Field()
+  name: string;
+
+  static fromArtistObject(artist: SpotifyApi.ArtistObjectSimplified): Artist {
+    const newArtist = new Artist();
+    newArtist.id = artist.id;
+    newArtist.name = artist.name;
+
+    return newArtist;
+  }
+}
+
+export default Artist;

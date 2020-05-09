@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "target": "es6",
+    "target": "es2018",
     "module": "commonjs",
     "moduleResolution": "node",
     "noImplicitAny": false,
@@ -9,7 +9,10 @@
     "sourceMap": true,
     "forceConsistentCasingInFileNames": true,
     "outDir": "dist",
-    "declaration": true
+    "declaration": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "lib": ["es2018", "ESNext.AsyncIterable"]
   },
   "include": [
     "src/**/*.ts"
@@ -17,5 +20,6 @@
   "exclude": [
     "src/**/*.spec.ts",
     "node_modules"
-  ]
+  ],
+  
 }

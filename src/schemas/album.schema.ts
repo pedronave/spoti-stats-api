@@ -1,24 +1,30 @@
-import { GraphQLID, GraphQLObjectType, GraphQLString, GraphQLInt, GraphQLList } from 'graphql';
+import { ObjectType, Field, ID } from 'type-graphql';
 
-import ArtistType from './artist.schema';
+import Artist from './artist.schema';
 
-const AlbumType = new GraphQLObjectType({
-  name: 'album',
-  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-  fields: () => ({
-    id: { type: GraphQLID },
-    name: { type: GraphQLString },
-    // eslint-disable-next-line @typescript-eslint/camelcase
-    release_date: { type: GraphQLString },
-    // eslint-disable-next-line @typescript-eslint/camelcase
-    total_tracks: { type: GraphQLInt },
-    artists: {
-      type: new GraphQLList(ArtistType),
-      // resolve(parent, args) {
-      //   return Department.findById(parent.deptId);
-      // },
-    },
-  }),
-});
+@ObjectType()
+class Album {
+  @Field((type) => ID)
+  id: string;
 
-export default AlbumType;
+  @Field()
+  name: string;
+
+  @Field()
+  releaseDate: Date;
+
+  @Field((type) => [Artist])
+  artists: Artist[];
+
+  static fromAlbumObjectFull(album: SpotifyApi.AlbumObjectSimplified): Album {
+    const newAlbum = new Album();
+    newAlbum.id = album.id;
+    newAlbum.name = album.name;
+    newAlbum.releaseDate = new Date(album.release_date);
+    newAlbum.artists = album.artists.map((artist) => Artist.fromArtistObject(artist));
+
+    return newAlbum;
+  }
+}
+
+export default Album;

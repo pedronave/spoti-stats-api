@@ -1,20 +1,18 @@
-import { GraphQLBoolean, GraphQLObjectType, GraphQLString } from 'graphql';
+import { ObjectType, Field } from 'type-graphql';
+import Track from './track.schema';
 
-import TrackType from './track.schema';
+@ObjectType({ description: 'The currently playing track' })
+class CurrentPlay {
+  @Field((type) => Track, { description: 'The track being played' })
+  track: Track;
 
-/**
- * Schema used to define the currently playing track
- */
-const CurrentPlayType = new GraphQLObjectType({
-  name: 'currentPlay',
-  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-  fields: () => ({
-    item: { type: TrackType },
-    // eslint-disable-next-line @typescript-eslint/camelcase
-    is_playing: { type: GraphQLBoolean },
-    // eslint-disable-next-line @typescript-eslint/camelcase
-    played_at: { type: GraphQLString },
-  }),
-});
+  trackId: string;
 
-export default CurrentPlayType;
+  @Field()
+  isPlaying: boolean;
+
+  @Field()
+  playedAt: Date;
+}
+
+export default CurrentPlay;

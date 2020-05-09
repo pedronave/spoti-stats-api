@@ -1,30 +1,40 @@
-import { GraphQLID, GraphQLInt, GraphQLList, GraphQLObjectType, GraphQLString } from 'graphql';
+import { ObjectType, Field, Int, ID } from 'type-graphql';
 
-import ArtistType from './artist.schema';
-import AlbumType from './album.schema';
+import Artist from './artist.schema';
+import Album from './album.schema';
 
-const TrackType = new GraphQLObjectType({
-  name: 'track',
-  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-  fields: () => ({
-    id: { type: GraphQLID },
-    name: { type: GraphQLString },
-    // eslint-disable-next-line @typescript-eslint/camelcase
-    duration_ms: { type: GraphQLInt },
-    trackNumber: { type: GraphQLInt },
-    artists: {
-      type: new GraphQLList(ArtistType),
-      // resolve(parent, args) {
-      //   return Department.findById(parent.deptId);
-      // },
-    },
-    album: {
-      type: AlbumType,
-      // resolve(parent, args) {
-      //   return Position.findById(parent.positionId);
-      // },
-    },
-  }),
-});
+@ObjectType()
+class Track {
+  @Field(() => ID)
+  id: string;
 
-export default TrackType;
+  @Field()
+  name: string;
+
+  @Field(() => Int)
+  durationMs: number;
+
+  @Field(() => Int)
+  trackNumber: number;
+
+  @Field(() => [Artist])
+  artists: Artist[];
+
+  @Field(() => Album)
+  album: Album;
+
+  static fromTrackObjectFull(track: SpotifyApi.TrackObjectFull): Track {
+    const newTrack = new Track();
+    newTrack.id = track.id;
+    newTrack.name = track.name;
+    newTrack.durationMs = track.duration_ms;
+    newTrack.trackNumber = track.track_number;
+
+    newTrack.artists = track.artists.map((artist) => Artist.fromArtistObject(artist));
+    newTrack.album = Album.fromAlbumObjectFull(track.album);
+
+    return newTrack;
+  }
+}
+
+export default Track;

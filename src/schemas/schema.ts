@@ -1,37 +1,11 @@
-import { GraphQLID, GraphQLObjectType, GraphQLSchema } from 'graphql';
-import { getUserSpotifyApi } from '../utils/spotify-api.utils';
-import UserType from './user.schema';
+import { buildSchemaSync } from 'type-graphql';
+import CurrentPlayResolver from '../resolvers/current-play.resolver';
+import UserResolver from '../resolvers/user.resolver';
+import TrackResolver from '../resolvers/track.resolver';
+import PlayHistoryResolver from '../resolvers/play-history.resolver';
 
-const RootQueryType = new GraphQLObjectType({
-  name: 'RootQuery',
-  fields: {
-    user: {
-      type: UserType,
-      args: { id: { type: GraphQLID } },
-      // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-      resolve(parent, args) {
-        return new Promise((resolve, reject) => {
-          getUserSpotifyApi(args.id).then(
-            (spotifyApi) => {
-              spotifyApi.getMe().then(
-                (userData) => {
-                  resolve({ id: userData.body.id, displayName: userData.body.display_name });
-                },
-                (userError) => {
-                  reject(userError);
-                },
-              );
-            },
-            (error) => {
-              reject(error);
-            },
-          );
-        });
-      },
-    },
-  },
+const schema = buildSchemaSync({
+  resolvers: [CurrentPlayResolver, UserResolver, TrackResolver, PlayHistoryResolver],
 });
 
-export default new GraphQLSchema({
-  query: RootQueryType,
-});
+export default schema;
