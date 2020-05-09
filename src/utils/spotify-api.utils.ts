@@ -1,4 +1,5 @@
-import User from '../models/user.model';
+import UserModel, { User } from '../models/user.model';
+import { PlayHistory } from '../models/play-history.model';
 
 import SpotifyWebApi = require('spotify-web-api-node');
 
@@ -9,6 +10,10 @@ import SpotifyWebApi = require('spotify-web-api-node');
 function resetSpotifyApiTokens(spotifyApi: SpotifyWebApi): void {
   spotifyApi.resetAccessToken();
   spotifyApi.resetRefreshToken();
+}
+
+function isSpotifyTokenExpired(tokenExpiration: Date): boolean {
+  return tokenExpiration.getTime() <= Date.now();
 }
 
 /**
@@ -28,8 +33,8 @@ function getUserSpotifyApi(userId: string): Promise<SpotifyWebApi> {
   });
 
   return new Promise((resolve, reject) => {
-    User.findById(userId).then(
-      (foundUser) => {
+    UserModel.findById(userId).then(
+      (foundUser: User) => {
         const user = foundUser;
         if (user === null) {
           const userNotFoundError = new Error('User not found');
@@ -40,7 +45,7 @@ function getUserSpotifyApi(userId: string): Promise<SpotifyWebApi> {
 
           spotifyApi.setRefreshToken(refreshToken);
 
-          if (user.isSpotifyTokenExpired()) {
+          if (isSpotifyTokenExpired(user.spotifyAuth.accessTokenExpiration)) {
             spotifyApi.refreshAccessToken().then(
               (refreshResult) => {
                 // Update token in DB
@@ -68,6 +73,25 @@ function getUserSpotifyApi(userId: string): Promise<SpotifyWebApi> {
       },
     );
   });
+}
+
+export function mapRecentPlayToPlayHistory(userId: string, data: SpotifyApi.PlayHistoryObject): PlayHistory {
+  const artists = data.track.artists.map((artist) => ({ id: artist.id, name: artist.name }));
+
+  return {
+    userId,
+    track: {
+      id: data.track.id,
+      name: data.track.name,
+      // duration_ms: item.track.duration_ms,
+      album: {
+        id: 'test', // item.track.album.id,
+        name: 'test', // item.track.album.name,
+      },
+      artists,
+    },
+    playedAt: new Date(data.played_at),
+  };
 }
 
 export { getUserSpotifyApi, resetSpotifyApiTokens };

@@ -1,5 +1,5 @@
-import { getUserSpotifyApi, resetSpotifyApiTokens } from '../utils/spotify-api.utils';
-import PlayHistory, { Play } from '../models/play-history.model';
+import { getUserSpotifyApi, resetSpotifyApiTokens, mapRecentPlayToPlayHistory } from '../utils/spotify-api.utils';
+import PlayHistoryModel, { PlayHistory, PlayHistoryDocument } from '../models/play-history.model';
 
 import SpotifyWebApi = require('spotify-web-api-node');
 
@@ -33,75 +33,68 @@ function getRecentlyPlayedTracks(userId: string): Promise<SpotifyApi.UsersRecent
  * @param {String} userId id of user
  * @returns {Promise<PlayHistory>} promise with play history
  */
-function getPlayHistory(userId: string): Promise<Play[]> {
+function getPlayHistory(userId: string, limit = 10): Promise<PlayHistory[]> {
   // TODO add filters
   return new Promise((resolve, reject) => {
+    if (limit <= 0) {
+      reject(new Error('Invalid parameters'));
+    }
+
     getUserSpotifyApi(userId).then(
       (spotifyApi: SpotifyWebApi) => {
-        // If this gets in here the userId is registered
-        PlayHistory.findOne({ userId }).then(
-          (historyFound) => {
-            let userHistory = historyFound;
-            if (historyFound === null) {
-              userHistory = new PlayHistory({
-                userId,
-                plays: [],
-              });
-            }
-            let afterValue;
+        // Get the play history from the DB
+        PlayHistoryModel.find({ userId })
+          .sort({ playedAt: -1 })
+          .limit(limit)
+          .then(
+            (historyFound: PlayHistoryDocument[]) => {
+              let lastTrackTime;
 
-            if (userHistory.plays !== null && userHistory.plays !== undefined) {
-              if (userHistory.plays.length > 0 && userHistory.plays[0].played_at !== undefined) {
-                afterValue = userHistory.plays[0].played_at.getTime();
+              // If there is an item in the play history get the time it was played to avoid getting duplicates
+              if (historyFound !== null && historyFound.length > 0) {
+                if (historyFound[0] !== null && historyFound[0].playedAt !== undefined) {
+                  lastTrackTime = historyFound[0].playedAt.getTime();
+                }
               }
-            }
 
-            // Get recently played tracks from spotify
-            spotifyApi
-              .getMyRecentlyPlayedTracks({ after: afterValue })
-              .then(
-                (data) => {
-                  const recentPlays = data.body.items.map<Play>((item) => {
-                    const artists = item.track.artists.map((artist) => ({ id: artist.id, name: artist.name }));
+              // Get recently played tracks from spotify after last saved track
+              spotifyApi
+                .getMyRecentlyPlayedTracks({ after: lastTrackTime })
+                .then(
+                  (data) => {
+                    // TODO if there is a big gap we need to follow the cursor to get the ones before.
+                    const newPlays = data.body.items.map(
+                      (item) => new PlayHistoryModel(mapRecentPlayToPlayHistory(userId, item)),
+                    );
 
-                    return {
-                      track: {
-                        id: item.track.id,
-                        name: item.track.name,
-                        // duration_ms: item.track.duration_ms,
-                        album: {
-                          id: 'test', // item.track.album.id,
-                          name: 'test', // item.track.album.name,
-                        },
-                        artists,
-                      },
-                      // eslint-disable-next-line @typescript-eslint/camelcase
-                      played_at: new Date(item.played_at),
-                    };
-                  });
+                    // Save the new plays to the DB
+                    newPlays.forEach((play) => {
+                      play.save();
+                    });
 
-                  let updatedPlays = recentPlays;
-                  // If there are previous played tracks add them to the new ones.
-                  if (userHistory.plays !== null && userHistory.plays !== undefined) {
-                    updatedPlays = recentPlays.concat(userHistory.plays);
-                  }
+                    let recentPlays: PlayHistory[];
 
-                  userHistory.plays = updatedPlays;
-                  userHistory.save();
-                  resolve(updatedPlays);
-                },
-                (err) => {
-                  reject(err);
-                },
-              )
-              .finally(() => {
-                resetSpotifyApiTokens(spotifyApi);
-              });
-          },
-          (historyError) => {
-            reject(historyError);
-          },
-        );
+                    // If we get more recently played from Spotify than asked, slice it. Otherwise concat the ones from the DB
+                    if (newPlays.length >= limit) {
+                      recentPlays = newPlays.slice(0, limit);
+                    } else {
+                      recentPlays = newPlays.concat(historyFound).slice(0, limit);
+                    }
+
+                    resolve(recentPlays);
+                  },
+                  (err) => {
+                    reject(err);
+                  },
+                )
+                .finally(() => {
+                  resetSpotifyApiTokens(spotifyApi);
+                });
+            },
+            (historyError) => {
+              reject(historyError);
+            },
+          );
       },
       (err) => {
         reject(err);

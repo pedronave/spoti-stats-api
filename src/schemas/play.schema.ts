@@ -10,8 +10,7 @@ const PlayType = new GraphQLObjectType({
   // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   fields: () => ({
     track: { type: TrackType },
-    // eslint-disable-next-line @typescript-eslint/camelcase
-    played_at: { type: GraphQLString },
+    playedAt: { type: GraphQLString },
   }),
 });
 

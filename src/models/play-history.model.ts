@@ -1,11 +1,7 @@
 import * as mongoose from 'mongoose';
 
-export interface PlayHistory extends mongoose.Document {
+export interface PlayHistory {
   userId: string;
-  plays: Play[];
-}
-
-export class Play {
   track: {
     id: string;
     name: string;
@@ -18,10 +14,10 @@ export class Play {
       name: string;
     }[];
   };
-
-  // eslint-disable-next-line @typescript-eslint/camelcase
-  played_at: Date;
+  playedAt: Date;
 }
+
+export interface PlayHistoryDocument extends PlayHistory, mongoose.Document {}
 
 const PlayHistorySchema = new mongoose.Schema(
   {
@@ -29,28 +25,23 @@ const PlayHistorySchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    plays: [
-      {
-        track: {
+    track: {
+      id: String,
+      name: String,
+      album: {
+        id: String,
+        name: String,
+      },
+      artists: [
+        {
           id: String,
           name: String,
-          album: {
-            id: String,
-            name: String,
-          },
-          artists: [
-            {
-              id: String,
-              name: String,
-            },
-          ],
         },
-        // eslint-disable-next-line @typescript-eslint/camelcase
-        played_at: Date,
-      },
-    ],
+      ],
+    },
+    playedAt: Date,
   },
   { timestamps: true },
 );
 
-export default mongoose.model<PlayHistory>('PlayHistory', PlayHistorySchema);
+export default mongoose.model<PlayHistoryDocument>('Plays', PlayHistorySchema);
