@@ -7,7 +7,7 @@ import SpotifyWebApi = require('spotify-web-api-node');
  * Gets the recently played tracks from the spotify api
  * @param {String} userId id of user whose tracks is wanted
  */
-function getRecentlyPlayedTracks(userId): Promise<SpotifyApi.UsersRecentlyPlayedTracksResponse> {
+function getRecentlyPlayedTracks(userId: string): Promise<SpotifyApi.UsersRecentlyPlayedTracksResponse> {
   return new Promise((resolve, reject) => {
     getUserSpotifyApi(userId).then((spotifyApi: SpotifyWebApi) => {
       // TODO add after and before params for filtering
@@ -33,7 +33,7 @@ function getRecentlyPlayedTracks(userId): Promise<SpotifyApi.UsersRecentlyPlayed
  * @param {String} userId id of user
  * @returns {Promise<PlayHistory>} promise with play history
  */
-function getPlayHistory(userId): Promise<Play[]> {
+function getPlayHistory(userId: string): Promise<Play[]> {
   // TODO add filters
   return new Promise((resolve, reject) => {
     getUserSpotifyApi(userId).then(
@@ -115,7 +115,7 @@ function getPlayHistory(userId): Promise<Play[]> {
  * @param {String} userId id of user
  * @returns {Promise<SpotifyApi.CurrentlyPlayingResponse>} promise of the currently playing track
  */
-function getCurrentlyPlayingTrack(userId): Promise<SpotifyApi.CurrentlyPlayingResponse> {
+function getCurrentlyPlayingTrack(userId: string): Promise<SpotifyApi.CurrentlyPlayingResponse> {
   return new Promise((resolve, reject) => {
     getUserSpotifyApi(userId).then((spotifyApi: SpotifyWebApi) => {
       spotifyApi

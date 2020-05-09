@@ -1,13 +1,9 @@
-/* eslint-disable no-console */
-import { Router } from 'express';
 import * as jwt from 'jsonwebtoken';
 
 import User from '../models/user.model';
 import { resetSpotifyApiTokens } from '../utils/spotify-api.utils';
 
 import SpotifyWebApi = require('spotify-web-api-node');
-
-const authRouter = Router();
 
 const scopes = [
   'user-read-private',
@@ -28,16 +24,16 @@ const spotifyApi = new SpotifyWebApi({
   clientId,
 });
 
-authRouter.get('/spotify-auth', (req, res) => {
+export function sendSpotifyAuthURL(req, res): void {
   // TODO make state depend on the request. Maybe a hash of a cookie or something?
   const state = 'spotify_auth_state';
 
   const authorizeURL = spotifyApi.createAuthorizeURL(scopes, state);
 
   res.send({ authUrl: authorizeURL });
-});
+}
 
-authRouter.get('/spotify-callback', (req, res) => {
+export function spotifyCallback(req, res): void {
   // The code that's returned as a query parameter to the redirect URI
   const code = req.query.code.toString();
   // The returnedState should be compared with the sent one.
@@ -101,8 +97,4 @@ authRouter.get('/spotify-callback', (req, res) => {
       res.status(500).send(codeGrantErr);
     },
   );
-
-  // res.redirect('/');
-});
-
-export default authRouter;
+}

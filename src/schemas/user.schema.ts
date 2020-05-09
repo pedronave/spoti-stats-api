@@ -1,7 +1,7 @@
 import { GraphQLID, GraphQLObjectType, GraphQLList, GraphQLString } from 'graphql';
 
 import PlayType from './play.schema';
-import { getPlayHistory, getRecentlyPlayedTracks, getCurrentlyPlayingTrack } from '../services/play-history';
+import { getPlayHistory, getRecentlyPlayedTracks, getCurrentlyPlayingTrack } from '../services/play-history.services';
 
 import CurrentPlayType from './current-play.schema';
 
