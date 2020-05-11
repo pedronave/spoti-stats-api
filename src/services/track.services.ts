@@ -43,3 +43,24 @@ export function getAlbum(albumId: string, userId: string): Promise<SpotifyApi.Si
     });
   });
 }
+
+export function getTrackFeatures(trackId: string): Promise<SpotifyApi.AudioFeaturesObject> {
+  return new Promise((resolve, reject) => {
+    getUserSpotifyApi('troponeme').then((spotifyApi: SpotifyWebApi) => {
+      spotifyApi
+        .getAudioFeaturesForTrack(trackId)
+        .then(
+          (data) => {
+            console.log('Get audio feats');
+            resolve(data.body);
+          },
+          (err) => {
+            reject(err);
+          },
+        )
+        .finally(() => {
+          resetSpotifyApiTokens(spotifyApi);
+        });
+    });
+  });
+}

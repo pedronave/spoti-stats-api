@@ -26,7 +26,7 @@ class CurrentPlayResolver implements ResolverInterface<CurrentPlay> {
   async track(@Root() root: CurrentPlay): Promise<Track> {
     // TODO doesn't make much sense to use root.track as it's what we're fetching, but there's no other way to get the track id. Or is there?
     // TODO change the userID to the id of the user
-    return getTrack(root.track.id, 'troponeme').then((data) => {
+    return getTrack(root.trackId, 'troponeme').then((data) => {
       return Track.fromTrackObjectFull(data);
     });
   }
